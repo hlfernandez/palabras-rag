@@ -5,6 +5,10 @@ from datetime import datetime
 import argparse
 
 def main(output_dir):
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        print(f"Directorio {output_dir} creado.")
+
     today = datetime.today()
     date_str = today.strftime('%Y_%m_%d')
 

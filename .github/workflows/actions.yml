@@ -1,6 +1,8 @@
 name: run scraper.py
 
-on: workflow_dispatch
+on:
+  schedule:
+    - cron: '15 13 * * *'
 
 jobs:
   build:
