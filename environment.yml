@@ -1,0 +1,7 @@
+name: palabras_rag
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - requests
+  - beautifulsoup4
