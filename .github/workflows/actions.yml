@@ -24,8 +24,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: execute py script # run scraper.py
+      - name: execute py script
         run: python scraper.py data
+
+      - name: execute accumulate.py script
+        run: python accumulate.py data --output_gif word_race_chart.gif
 
       - name: commit files
         run: |
