@@ -110,25 +110,62 @@ def save_animation_as_gif(fig, gif_path, frame_duration=500):
     print(f"GIF saved to {gif_path}")
 
 
+def save_last_row_as_png(df, png_path):
+    # Get the last row of the DataFrame
+    last_row = df.iloc[-1]
+    
+    # Convert the last row to a DataFrame for plotting
+    last_row_df = last_row.drop('date').reset_index()
+    last_row_df.columns = ['word', 'count']
+    # Sort by count and select the top 15 words
+    top_15_words_df = last_row_df.sort_values(by='count', ascending=False).head(15)
+    
+    # Create a bar plot using Plotly Express
+    fig = px.bar(
+        top_15_words_df,
+        x='count',
+        y='word',
+        orientation='h',
+        title=f"Word Frequency on {last_row['date']}",
+        labels={"count": "Cumulative Word Count", "word": "Words"}
+    )
+    
+    fig.update_layout(
+        xaxis_title="Cumulative Word Count",
+        yaxis_title="Words",
+        yaxis={'categoryorder': 'total ascending'},
+        showlegend=False,
+        template="plotly_white",
+        margin=dict(l=150, r=50, t=50, b=50)  # Adjust margins to ensure all rows are visible
+    )
+
+    # Save the plot as a PNG file
+    fig.write_image(png_path)
+    print(f"PNG saved to {png_path}")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process text files and accumulate word counts.")
     parser.add_argument("input_dir", type=str, help="Directory containing the input text files.")
     parser.add_argument("--output_gif", type=str, help="Path to save the output GIF animation.")
+    parser.add_argument("--output_csv", type=str, help="Path to save the output CSV file.")
+    parser.add_argument("--output_png", type=str, help="Path to save the bar plot of the last row as a PNG file.")
+    parser.add_argument("--show_animation", action="store_true", help="Show the animation in a window.")
     
     args = parser.parse_args()
     
-    # Process the files in the specified directory
     df = process_files_in_directory(args.input_dir)
-    
-    # Optionally, save the DataFrame to a CSV file or print it
-    # df.to_csv('accumulated_word_counts.csv', index=False)
-    # print(df)
 
-    # Create the race chart
     fig = create_race_chart(df)
 
-    # If an output GIF path is provided, save the animation as a GIF
+    if args.output_csv:
+        df.to_csv(args.output_csv, index=False)
+
     if args.output_gif:
         save_animation_as_gif(fig, args.output_gif)
-    else:
+    
+    if args.show_animation:
         fig.show()
+
+    if args.output_png:
+        save_last_row_as_png(df, args.output_png)

@@ -28,7 +28,7 @@ jobs:
         run: python scraper.py data
 
       - name: execute accumulate.py script
-        run: python accumulate.py data --output_gif word_race_chart.gif
+        run: python accumulate.py data --output_gif word_race_chart.gif --output_png word_race_chart.png
 
       - name: commit files
         run: |
